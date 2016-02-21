@@ -10,17 +10,18 @@ import locale
 from concurrent.futures.thread import ThreadPoolExecutor
 
 
-prod_url = "http://www.j-boutique.com/products/"
-urlPath = prod_url + "?p={0}"#&lang=eng"
-
-os.chdir('products/')
-
-executor = ThreadPoolExecutor(max_workers=10)
-
 def makedir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
     pass
+
+
+prod_url = "http://www.j-boutique.com/products/"
+urlPath = prod_url + "?p={0}"#&lang=eng"
+makedir('products/')
+os.chdir('products/')
+
+executor = ThreadPoolExecutor(max_workers=10)
 
 
 def processImages(i, images):
@@ -49,7 +50,7 @@ def processImages(i, images):
 s = requests.Session()
 s.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:42.0) Gecko/20100101 Firefox/42.0'
 s.headers['Accept-Language'] = 'en-US,en;q=0.5'
-cookie = {'PHPSESSID' : 'd2ecdkvkh7kpifq4e0u14abs51'}
+cookie = {'PHPSESSID' : '4n58hnpfkiojgr9h1l0djtrqg5'}
 
 #for i in range(0x3040, 0x30a0): print(chr(i), end='')
 
@@ -115,6 +116,9 @@ for i in range(1, 500):
             #print(codecs.decode(codecs.encode(val, 'utf8'), 'SHIFT_JIS'))
             myhash["description"] = val # if desc.string is not None else ""
 
+            title = soup.find(id="dtpt_left")
+            print("title = ", title.contents)
+            myhash["title"] = title.contents[0] if title.contents else "Not present"
 
             pprint.pprint(myhash)
             with codecs.open(str(i) + '/data' + ('-en' if cook == cookie else '-jp') + '.json', 'w', encoding='utf8') as outfile:
